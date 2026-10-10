@@ -15,3 +15,6 @@ env/
 
 # macOS
 .DS_Store
+
+# Practice Files
+regex_practice.py
