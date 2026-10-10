@@ -1,5 +1,6 @@
-from filter import ChatFilter
 import pytest
+from filter import ChatFilter
+
 
 def test_message_is_allowed():
     chat_filter = ChatFilter()
