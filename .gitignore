@@ -8,7 +8,8 @@ venv/
 env/
 
 # PyCharm
-.idea/
+idea
+.idea
 
 # Environment variables / secrets
 .env
@@ -17,4 +18,8 @@ env/
 .DS_Store
 
 # Practice Files
-regex_practice.py
+practices
+
+## Roadmap
+#PROJECT_ROADMAP.md
+#SPRINT_PROGRESS.md

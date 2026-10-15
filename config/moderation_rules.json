@@ -1,0 +1,15 @@
+{
+    "ban": [
+        "harassment"
+    ],
+    "timeout": [
+        "spam",
+        "stop spamming"
+    ],
+    "warn": [
+        "idiot",
+        "shut up",
+        "sucks",
+        "insult"
+    ]
+}

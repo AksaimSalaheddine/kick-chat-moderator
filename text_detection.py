@@ -4,7 +4,7 @@ def build_pattern(word):
     for index, char in enumerate(word):
         if index != len(word) - 1:
             pattern += re.escape(char)
-            pattern += "[ .-]*"
+            pattern += r"[^a-zA-Z]*"
         else :
             pattern += re.escape(char)
     pattern = rf"\b{pattern}\b"

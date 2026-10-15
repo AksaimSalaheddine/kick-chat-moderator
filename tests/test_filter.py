@@ -8,23 +8,31 @@ def test_message_is_allowed():
 
     assert result == "Allowed"
 
-def test_message_is_not_allowed():
+def test_high_severity_first():
     chat_filter = ChatFilter()
-    result = chat_filter.check_message("S-P-A-M and HARASS-MENT and insult")
+    result = chat_filter.check_message("harassment first hello S-P-A-M and insult")
     assert result != "Allowed"
-    assert result["severity"] == "high"
-    assert result["action"] == "banned"
+    assert result["action"] == "ban"
+
+
+def test_high_severity_last():
+    chat_filter = ChatFilter()
+    result = chat_filter.check_message("hello S-P-A-M and insult then hara/ssment")
+    assert result != "Allowed"
+    assert result["action"] == "ban"
 
 @pytest.mark.parametrize("message", [
     "s.p.a.m",
     "s-p-a-m",
     "s p a m",
+    "s/p/a/m",
+    "s_p_a_m",
+    "s@p@a@m",
 ])
 def test_dotted_spam(message):
     chat_filter = ChatFilter()
     result = chat_filter.check_message(message)
     assert result["word"] == "spam"
-    assert result["severity"] == "medium"
     assert result["action"] == "timeout"
 
 @pytest.mark.parametrize("message, expected", [
