@@ -8,8 +8,11 @@ venv/
 env/
 
 # PyCharm
-idea
-.idea
+.idea/
+idea/
+
+# Python test cache
+.pytest_cache/
 
 # Environment variables / secrets
 .env

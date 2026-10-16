@@ -27,3 +27,20 @@ def test_contains_space_only():
 def test_contains_word_with_surrounding_spaces():
     result = contains_word("spam", "  spam  ")
     assert result
+
+@pytest.mark.parametrize("message", [
+    "spam!",
+    "(spam)",
+    "spam, please stop",
+])
+def test_spam_with_punctuation(message):
+    assert contains_word("spam", message)
+
+
+@pytest.mark.parametrize("message", [
+    "spammer",
+    "newspam",
+    "spamming",
+])
+def test_spam_inside_another_word_is_not_matched(message):
+    assert not contains_word("spam", message)

@@ -46,3 +46,23 @@ def test_message(message, expected):
     result = chat_filter.check_message(message)
     assert result == expected
 
+
+
+def test_message_matching_is_case_insensitive():
+    chat_filter = ChatFilter()
+    result = chat_filter.check_message("SPaM")
+
+    assert result["word"] == "spam"
+    assert result["action"] == "timeout"
+
+
+
+def test_message_matches_configured_phrase():
+    chat_filter = ChatFilter()
+    result = chat_filter.check_message("please stop spamming")
+
+    assert result["word"] == "stop spamming"
+    assert result["action"] == "timeout"
+
+
+
