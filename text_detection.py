@@ -1,16 +1,14 @@
-import re
-def build_pattern(word):
-    pattern = ""
-    for index, char in enumerate(word):
-        if index != len(word) - 1:
-            pattern += re.escape(char)
-            pattern += r"[^a-zA-Z]*"
-        else :
-            pattern += re.escape(char)
-    pattern = rf"\b{pattern}\b"
-    return pattern
+"""Regex-based detection for words and lightly obfuscated phrases."""
 
-def contains_word(word, message):
-    pattern = build_pattern(word)
-    result = re.search(pattern, message, re.IGNORECASE)
-    return result is not None
+import re
+
+
+def build_pattern(word: str) -> str:
+    """Build a word-boundary pattern that permits separators between letters."""
+    characters = r"[^a-zA-Z]*".join(re.escape(char) for char in word)
+    return rf"\b{characters}\b"
+
+
+def contains_word(word: str, message: str) -> bool:
+    """Return whether ``message`` contains ``word``, ignoring case."""
+    return re.search(build_pattern(word), message, re.IGNORECASE) is not None

@@ -1,87 +1,45 @@
-from text_detection import contains_word
+"""Core chat moderation decisions."""
+
 from rule_loader import load_rules
-
-# Previous code
-# Previous code
-# class ChatFilter:
-#     def check_message(self, message):
-#         highest_level = 0
-#         highest_rule = {}
-#         for rule in RULES:
-#             word = rule["word"]
-#             if contains_word(word, message):
-#                 current_level = SEVERITY_LEVELS[rule["severity"]]
-#                 if current_level > highest_level:
-#                     highest_level = current_level
-#                     highest_rule = rule
-#         if highest_rule == {}:
-#             return "Allowed"
-#         else:
-#             return highest_rule
-# Previous code
-
-
-# class ChatFilter:
-#     def __init__(self, rules_path="config/moderation_rules.json"):
-#         self.rules = load_rules(rules_path)
-#
-#     def check_message(self, message):
-#         action_priority = {
-#             "warn": 1,
-#             "timeout": 2,
-#             "ban": 3
-#         }
-#
-#         highest_priority = 0
-#         highest_rule = {}
-#
-#         for action, words in self.rules.items():
-#             for word in words:
-#                 if contains_word(word, message):
-#                     current_priority = action_priority[action]
-#
-#                     if current_priority > highest_priority:
-#                         highest_priority = current_priority
-#                         highest_rule = {
-#                             "word": word,
-#                             "action": action
-#                         }
-#
-#         if highest_rule == {}:
-#             return "Allowed"
-#
-#         return highest_rule
-#  Previous code
-
+from text_detection import contains_word
 
 
 class ChatFilter:
-    def __init__(self, rules_path="config/moderation_rules.json"):
+    """Evaluate messages against rules loaded from a JSON file."""
+
+    ACTION_PRIORITY = {"warn": 1, "timeout": 2, "ban": 3}
+    ACTION_SEVERITY = {"warn": "low", "timeout": "medium", "ban": "high"}
+
+    def __init__(self, rules_path: str = "config/moderation_rules.json") -> None:
         self.rules = load_rules(rules_path)
 
-    def check_message(self, message):
-        action_priority = {
-            "warn": 1,
-            "timeout": 2,
-            "ban": 3
-        }
-
-        highest_priority = 0
-        highest_rule = {}
+    def check_message(self, message: str) -> dict:
+        """Return a consistent moderation result for a chat message."""
+        matches = []
 
         for action, words in self.rules.items():
             for word in words:
                 if contains_word(word, message):
-                    current_priority = action_priority[action]
+                    matches.append({
+                        "word": word,
+                        "action": action,
+                        "severity": self.ACTION_SEVERITY[action],
+                    })
 
-                    if current_priority > highest_priority:
-                        highest_priority = current_priority
-                        highest_rule = {
-                            "word": word,
-                            "action": action
-                        }
+        if not matches:
+            return {
+                "allowed": True,
+                "action": "allow",
+                "severity": None,
+                "matches": [],
+            }
 
-        if highest_rule == {}:
-            return "Allowed"
-
-        return highest_rule
+        highest_match = max(
+            matches, key=lambda match: self.ACTION_PRIORITY[match["action"]]
+        )
+        return {
+            "allowed": False,
+            "action": highest_match["action"],
+            "severity": highest_match["severity"],
+            "matches": matches,
+        }

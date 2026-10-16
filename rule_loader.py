@@ -1,38 +1,13 @@
+"""Load and validate JSON moderation rules."""
+
 import json
+from pathlib import Path
 
-#  Previous code
-# def load_rules_1(path):
-#     with open(path, "r") as file:
-#         data = file.read()
-#     moderation_rules = json.loads(data)
-#
-#     if not isinstance(moderation_rules, dict):
-#         raise ValueError("Moderation rules must be a dictionary")
-#
-#     allowed_severities = {"high", "medium", "low"}
-#     allowed_actions = {"warn", "timeout", "banned"}
-#
-#     for rule in moderation_rules:
-#         if not isinstance(rule, dict):
-#             raise ValueError("Each moderation rule must be a dictionary")
-#
-#         required_fields = {"word", "severity", "action"}
-#         if not required_fields.issubset(rule):
-#             raise ValueError("Each rule must contain word, severity, and action")
-#
-#         if rule["action"] not in allowed_actions:
-#             raise ValueError("Invalid action")
-#         if rule["severity"] not in allowed_severities:
-#             raise ValueError("Invalid severity")
-#
-#     return moderation_rules
-#  Previous code
 
-def load_rules(path):
-    with open(path, "r") as file:
-        data = file.read()
-
-    moderation_rules = json.loads(data)
+def load_rules(path: str) -> dict[str, list[str]]:
+    """Load and validate moderation rules from ``path``."""
+    with Path(path).open(encoding="utf-8") as file:
+        moderation_rules = json.load(file)
 
     if not isinstance(moderation_rules, dict):
         raise ValueError("Moderation rules must be a dictionary")
